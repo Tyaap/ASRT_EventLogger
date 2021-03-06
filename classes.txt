@@ -1,0 +1,25 @@
+session class:
+    players (steamid,player dictionary)
+    events (eventnum,event dictionary)
+
+event class:
+    eventnum (int)
+    event type (enum)
+    map (enum)
+    start time (float)
+    finish time (float)
+    results (result array)
+
+result class:
+    event (event)
+    position (int)
+    player (player)
+    score (float)
+    character (enum)
+    points (int)
+
+player class:
+    steamid (ulong)
+    name (string)
+    results (eventnum,result dictionary)
+    totalpoints (int)
