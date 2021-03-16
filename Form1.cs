@@ -38,7 +38,7 @@ namespace EventLogger
                 FormMessage("S&ASRT is running");
                 MemoryHelper.Initialise(processes[0].Id);
                 Write(0x70665C, new byte[] { 0xEB, 0x28 });
-                Write(0x706686, new byte[] { 0x8B, 0xF1, 0x89, 0x3D, 0xFC, 0xFF, 0x01, 0x00, 0xEB, 0xCE });
+                Write(0x706686, new byte[] { 0x8B, 0xF1, 0x89, 0x3D, 0xFC, 0x0F, 0xFF, 0x00, 0xEB, 0xCE });
             }
 
             int newLobbyState = GetLobbyState();
@@ -70,7 +70,7 @@ namespace EventLogger
             {
                 if (ReadInt(ReadInt(0xBCE920)) != 0)
                 {
-                    lobbyState = ReadByte(0x1FFFC);
+                    lobbyState = ReadByte(0xFF0FFC);
                 }
                 else
                 {
