@@ -17,7 +17,7 @@ namespace EventLogger
             timer.Tick += LogManager;
             timer.Start();
             FormMessage("Logging started! (custom games only)");
-            FormMessage("Log folder: " + AppContext.BaseDirectory);
+            FormMessage("Log folder: " + AppDomain.CurrentDomain.BaseDirectory);
             FormMessage("Close this window to stop logging");
         }
 
