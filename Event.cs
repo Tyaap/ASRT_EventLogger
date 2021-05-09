@@ -12,6 +12,7 @@ namespace EventLogger
         public List<Result> results = new List<Result>();
         public DateTime startTime;
         public DateTime resultsTime;
+        public Dictionary<int, Player> playerCache; // engine index -> player
 
         public Event(Session session, int index, EventType type, Map map)
         {
@@ -20,6 +21,20 @@ namespace EventLogger
             this.index = index;
             this.type = type;
             this.map = map;
+        }
+
+        public Player CachePlayer(ulong steamId, int localIndex, string name, int engineIndex)
+        {
+            if (playerCache == null)
+            {
+                playerCache = new Dictionary<int, Player>();
+            }
+            if (!session.players.TryGetValue(new Tuple<ulong, int>(steamId, localIndex), out Player player))
+            {
+                player = session.AddPlayer(steamId, localIndex, name);
+            }
+            playerCache.Add(engineIndex, player);
+            return player;
         }
 
         public Result AddResult(ulong steamId, int localIndex, string name, Character character, Completion completion, float score, int position)

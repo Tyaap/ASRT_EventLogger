@@ -25,7 +25,7 @@ namespace EventLogger
 
         public override string ToString()
         {
-            string scoreString = "";
+            string scoreString;
             if (thisEvent.type == EventType.CaptureTheChao)
             {
                 scoreString = score.ToString();

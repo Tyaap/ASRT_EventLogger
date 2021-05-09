@@ -18,7 +18,7 @@ namespace EventLogger
             timer.Start();
             FormMessage("Logging started! (custom games only)");
             FormMessage("Log folder: " + AppDomain.CurrentDomain.BaseDirectory);
-            FormMessage("Close this window to stop logging");
+            FormMessage("Close this window to stop logging.");
         }
 
         public void LogManager(object sender, EventArgs e)
@@ -87,7 +87,12 @@ namespace EventLogger
             {
                 message = "\n" + message;
             }
-            richTextBox1.Text += message; 
+            richTextBox1.AppendText(message); 
+        }
+
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.cacheEventPlayers = checkBox1.Checked;
         }
     }
 }

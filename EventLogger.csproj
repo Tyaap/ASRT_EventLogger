@@ -18,7 +18,7 @@
     <StartupObject>EventLogger.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon_BnB_icon.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -95,7 +95,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="icon_BnB_icon.ico" />
+    <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

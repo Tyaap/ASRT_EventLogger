@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using static MemoryHelper;
 
@@ -8,13 +7,15 @@ namespace EventLogger
     public class Logger
     {
         public string logFolder;
+        public bool cacheEventPlayers;
         public Session currentSession;
         public List<Session> sessions = new List<Session>();
         public Dictionary<Session, int> logFileCurrentEventCount = new Dictionary<Session, int>();
 
-        public Logger(string logFolder = null)
+        public Logger(string logFolder = null, bool cacheEventPlayers = false)
         {
             this.logFolder = string.IsNullOrEmpty(logFolder) ? "" : logFolder + "\\";
+            this.cacheEventPlayers = cacheEventPlayers;
         }
 
         public Session NewSession()
@@ -34,7 +35,31 @@ namespace EventLogger
             }
             EventType type = (EventType)ReadUInt(ReadInt(0xBC7430));
             Map map = (Map)ReadUInt(ReadInt(0xBC7434));
-            return session.AddEvent(type, map);
+            Event newEvent = session.AddEvent(type, map);
+            if (cacheEventPlayers)
+            {
+                CacheEventPlayers(newEvent);
+            }
+            return newEvent;
+        }
+
+        public void CacheEventPlayers(Event thisEvent = null)
+        {
+            if (thisEvent == null)
+            {
+                thisEvent = currentSession.lastEvent;
+            }
+            int count = ReadInt(0xBCE934);
+            for (int i = 0; i < count; i++)
+            {
+                if (!GetOnlineIndex(i, out int onlineIndex, out int localIndex))
+                {
+                    continue; // this is either an AI or a player who left before we could cache them
+                }
+                ulong steamId = ReadULong(ReadInt(ReadInt(0xEC1A88) + 0x528 + onlineIndex * 4) + 0x2BF0);
+                string name = ReadString(ReadInt(ReadInt(0xEC1A88) + 0x528 + onlineIndex * 4) + 0x25D8 + 0x180 * localIndex);
+                thisEvent.CachePlayer(steamId, localIndex, name, i);
+            }
         }
 
         // Logs the results for an event
@@ -49,13 +74,24 @@ namespace EventLogger
             for (int i = 0; i < count; i++)
             {
                 int engineIndex = ReadInt(0xC4FA94 + i * 4); // only works for custom game
-                if (!GetOnlineIndex(engineIndex, out int onlineIndex, out int localIndex))
+                ulong steamId;
+                int localIndex;
+                string name;
+                if (thisEvent.playerCache != null && thisEvent.playerCache.TryGetValue(engineIndex, out Player player))
                 {
-                    continue; // this is either an AI or a player who left the lobby mid-race
+                    steamId = player.steamId;
+                    localIndex = player.localIndex;
+                    name = player.name;
                 }
-
-                ulong steamId = ReadULong(ReadInt(ReadInt(0xEC1A88) + 0x528 + onlineIndex * 4) + 0x2BF0);
-                string name = ReadString(ReadInt(ReadInt(0xEC1A88) + 0x528 + onlineIndex * 4) + 0x25D8 + 0x180 * localIndex);
+                else if (GetOnlineIndex(engineIndex, out int onlineIndex, out localIndex))
+                {
+                    steamId = ReadULong(ReadInt(ReadInt(0xEC1A88) + 0x528 + onlineIndex * 4) + 0x2BF0);
+                    name = ReadString(ReadInt(ReadInt(0xEC1A88) + 0x528 + onlineIndex * 4) + 0x25D8 + 0x180 * localIndex);
+                }
+                else
+                {
+                    continue; // this is either an AI or an un-cached player who left the lobby mid-race
+                }
                 Character character = (Character)(ReadByte(ReadInt(0xEC1A88) + 0x101D50 + engineIndex) / 2);
                 Completion completion = GetPlayerCompletion(engineIndex, currentSession.lastEvent.type);
                 float score = GetPlayerScore(engineIndex, thisEvent.type, completion);
