@@ -66,6 +66,9 @@
     <Compile Include="Logger.cs" />
     <Compile Include="MemoryHelper.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="NumericUpDownEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

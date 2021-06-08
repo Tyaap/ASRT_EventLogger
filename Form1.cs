@@ -8,12 +8,13 @@ namespace EventLogger
     public partial class Form1 : Form
     {
         public Timer timer = new Timer() { Interval = 100 };
-        public Logger logger = new Logger();
+        public Logger logger;
         public int lobbyState = 0;
 
         public Form1()
         {
             InitializeComponent();
+            logger = new Logger(null, false, (int)numericUpDown1.Value, 1);
             timer.Tick += LogManager;
             timer.Start();
             FormMessage("Logging started! (custom games only)");
@@ -93,6 +94,11 @@ namespace EventLogger
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.cacheEventPlayers = checkBox1.Checked;
+        }
+
+        private void NumericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            logger.dpTime = (int)numericUpDown1.Value;
         }
     }
 }

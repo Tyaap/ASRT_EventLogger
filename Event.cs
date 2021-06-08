@@ -55,6 +55,11 @@ namespace EventLogger
 
         public override string ToString()
         {
+            return ToString();
+        }
+
+        public string ToString(int dpTime = 3, int dpPercentage = 1)
+        {
             string s = string.Format(
                 "{0}\t{1}\t{2}\r\n",
                 map.GetDescription(),
@@ -63,15 +68,23 @@ namespace EventLogger
 
             if (results.Count > 0)
             {
+                string sResults = "";
+                for (int i = 0; i < results.Count; i++)
+                {
+                    sResults += results[i].ToString(dpTime, dpPercentage);
+                    if (i != results.Count - 1)
+                    {
+                        sResults += "\r\n";
+                    }
+                }
                 s += string.Format("Position\tName\t{0}\tCharacter\tPoints\r\n{1}",
                 type != EventType.CaptureTheChao ? "Time" : "Chaos",
-                string.Join("\r\n", results));
+                sResults);
             }
             else
             {
                 s += "NO RESULTS";
             }
-
             return s;
         }
     }

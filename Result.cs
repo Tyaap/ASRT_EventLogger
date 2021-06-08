@@ -25,6 +25,11 @@ namespace EventLogger
 
         public override string ToString()
         {
+            return ToString();
+        }
+
+        public string ToString(int dpTime = 3, int dpPercentage = 1)
+        {
             string scoreString;
             if (thisEvent.type == EventType.CaptureTheChao)
             {
@@ -34,16 +39,16 @@ namespace EventLogger
             {
                 if (completion != Completion.DNF)
                 {
-                    scoreString = TimeSpan.FromSeconds(score).ToString(@"m\:ss\.fff");
+                    scoreString = TruncatedTimeString(score, dpTime);
                 }
                 else
                 {
-                    scoreString = TruncatedFloatString(score, 1) + "% (DNF)";
+                    scoreString = TruntateNumString(score.ToString(), dpPercentage) + "% (DNF)";
                 }
             }
             else
             {
-                scoreString = TimeSpan.FromSeconds(score).ToString(@"m\:ss\.fff");
+                scoreString = TruncatedTimeString(score, dpTime);
                 if (completion == Completion.Finished)
                 {
                     scoreString += " (finished)";
@@ -59,21 +64,40 @@ namespace EventLogger
             );; ;
         }
 
-        public static string TruncatedFloatString(float n, int decimals)
+        public static string TruncatedTimeString(float time, int dp)
         {
-            string num = n.ToString();
-            int dp = num.IndexOf('.');
-            if (dp == -1)
+            string s = TimeSpan.FromSeconds(time).ToString(@"m\:ss");
+            if (dp == 0) 
             {
-                return num;
+                return s;
             }
-            else if (decimals == 0)
+            string tmp = TruntateNumString(time.ToString(), dp);
+            int point = tmp.IndexOf('.');
+            if (point == -1)
             {
-                return num.Substring(0, dp);
+                return s;
+            }
+            return s + tmp.Substring(point);
+        }
+
+        public static string TruntateNumString(string s, int dp)
+        {
+            if (dp < 0)
+            {
+                return s;
+            }
+            int point = s.IndexOf('.');
+            if (point == -1)
+            {
+                return s;
+            }
+            else if (dp == 0)
+            {
+                return s.Substring(0, point);
             }
             else
             {
-                return num.Substring(0, dp + decimals + 1);
+                return s.Substring(0, Math.Min(s.Length, point + dp + 1));
             }
         }
     }

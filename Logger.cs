@@ -11,11 +11,15 @@ namespace EventLogger
         public Session currentSession;
         public List<Session> sessions = new List<Session>();
         public Dictionary<Session, int> logFileCurrentEventCount = new Dictionary<Session, int>();
+        public int dpTime;
+        public int dpPercentage;
 
-        public Logger(string logFolder = null, bool cacheEventPlayers = false)
+        public Logger(string logFolder = null, bool cacheEventPlayers = false, int dpTime = 3, int dpPercentage = 1)
         {
             this.logFolder = string.IsNullOrEmpty(logFolder) ? "" : logFolder + "\\";
             this.cacheEventPlayers = cacheEventPlayers;
+            this.dpTime = dpTime;
+            this.dpPercentage = dpPercentage;
         }
 
         public Session NewSession()
@@ -196,7 +200,7 @@ namespace EventLogger
             {
                 for (int i = eventCount; i < session.events.Count; i++)
                 {
-                    sw.Write((i > 0 ? "\r\n\r\n" : "") + session.events[i]);
+                    sw.Write((i > 0 ? "\r\n\r\n" : "") + session.events[i].ToString(dpTime, 1));
                 }
             }
             File.WriteAllText(
