@@ -113,7 +113,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(196, 29);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Record race times up to";
+            this.label1.Text = "Record times up to";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // numericUpDown1
