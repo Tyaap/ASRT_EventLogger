@@ -67,7 +67,7 @@ namespace EventLogger
         public static string TruncatedTimeString(float time, int dp)
         {
             TimeSpan ts = TimeSpan.FromSeconds(time);
-            if (dp == 0 || time % 1 == 0)
+            if (dp == 0)
             {
                 return ts.ToString("m\\:ss");
             }
