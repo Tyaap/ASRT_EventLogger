@@ -67,13 +67,13 @@ namespace EventLogger
         public static string TruncatedTimeString(float time, int dp)
         {
             TimeSpan ts = TimeSpan.FromSeconds(time);
-            if (dp == 0)
+            if (dp == 0 || time % 1 == 0)
             {
-                return ts.ToString(@"m\:ss");
+                return ts.ToString("m\\:ss");
             }
             else
             {
-                return ts.ToString(@"m\:ss." + new string('F', dp));
+                return ts.ToString("m\\:ss\\." + new string('F', dp)).TrimEnd('.');
             }
         }
 
