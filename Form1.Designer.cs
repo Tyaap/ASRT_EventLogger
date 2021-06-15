@@ -121,14 +121,14 @@
             this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.numericUpDown1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.numericUpDown1.Location = new System.Drawing.Point(465, 5);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
+            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(3, 5, 7, 5);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             6,
             0,
             0,
             0});
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(56, 23);
+            this.numericUpDown1.Size = new System.Drawing.Size(52, 23);
             this.numericUpDown1.TabIndex = 3;
             this.numericUpDown1.Value = new decimal(new int[] {
             6,

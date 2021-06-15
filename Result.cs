@@ -87,7 +87,7 @@ namespace EventLogger
                 return s;
             }
             int point = s.IndexOf('.');
-            if (point == -1)
+            if (point == -1 || point + dp + 1 > s.Length)
             {
                 return s;
             }
@@ -97,7 +97,7 @@ namespace EventLogger
             }
             else
             {
-                return s.Substring(0, Math.Min(s.Length, point + dp + 1));
+                return s.Substring(0, point + dp + 1).TrimEnd('0').TrimEnd('.');
             }
         }
     }
