@@ -14,7 +14,7 @@ namespace EventLogger
         public Form1()
         {
             InitializeComponent();
-            logger = new Logger(null, false, (int)numericUpDown1.Value, 1);
+            logger = new Logger(null, cacheEventPlayers: false, logHexTimes: true);
             timer.Tick += LogManager;
             timer.Start();
             FormMessage("Logging started! (custom games only)");
@@ -96,9 +96,9 @@ namespace EventLogger
             logger.cacheEventPlayers = checkBox1.Checked;
         }
 
-        private void NumericUpDown1_ValueChanged(object sender, EventArgs e)
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
-            logger.dpTime = (int)numericUpDown1.Value;
+            logger.logHexTimes = checkBox2.Checked;
         }
     }
 }

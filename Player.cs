@@ -9,7 +9,8 @@ namespace EventLogger
         public string name;
         public Dictionary<int, Result> results = new Dictionary<int, Result>();
         public int totalPoints;
-        public float average;
+        public decimal average;
+        public decimal totalTime;
 
         public Player(ulong steamId, int localIndex, string name)
         {
@@ -22,7 +23,11 @@ namespace EventLogger
         {
             results.Add(index, result);
             totalPoints += result.points;
-            average = totalPoints * 10f / results.Count;
+            average = totalPoints * 10m / results.Count;
+            if (result.thisEvent.type != EventType.CaptureTheChao)
+            {
+                totalTime += (decimal)result.score.ToFloat();
+            }
         }
     }
 }

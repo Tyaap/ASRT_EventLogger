@@ -11,15 +11,13 @@ namespace EventLogger
         public Session currentSession;
         public List<Session> sessions = new List<Session>();
         public Dictionary<Session, int> logFileCurrentEventCount = new Dictionary<Session, int>();
-        public int dpTime;
-        public int dpPercentage;
+        public bool logHexTimes;
 
-        public Logger(string logFolder = null, bool cacheEventPlayers = false, int dpTime = 3, int dpPercentage = 1)
+        public Logger(string logFolder = null, bool cacheEventPlayers = false, bool logHexTimes = false)
         {
             this.logFolder = string.IsNullOrEmpty(logFolder) ? "" : logFolder + "\\";
             this.cacheEventPlayers = cacheEventPlayers;
-            this.dpTime = dpTime;
-            this.dpPercentage = dpPercentage;
+            this.logHexTimes = logHexTimes;
         }
 
         public Session NewSession()
@@ -98,7 +96,7 @@ namespace EventLogger
                 }
                 Character character = (Character)(ReadByte(ReadInt(0xEC1A88) + 0x101D50 + engineIndex) / 2);
                 Completion completion = GetPlayerCompletion(engineIndex, currentSession.lastEvent.type);
-                float score = GetPlayerScore(engineIndex, thisEvent.type, completion);
+                int score = GetPlayerScore(engineIndex, thisEvent.type, completion);
 
                 thisEvent.AddResult(steamId, localIndex, name, character, completion, score, i + 1);
             }
@@ -145,26 +143,26 @@ namespace EventLogger
             return Completion.NA;
         }
 
-        public float GetPlayerScore(int engineIndex, EventType type, Completion completion)
+        public int GetPlayerScore(int engineIndex, EventType type, Completion completion)
         {
             if (type == EventType.BoostRace || type == EventType.NormalRace)
             {
                 if (completion == Completion.Finished)
                 {
-                    return ReadFloat(ReadInt(ReadInt(ReadInt(0xBCE920) + engineIndex * 4) + 0xC1B8) + 0x28); // race time
+                    return ReadInt(ReadInt(ReadInt(ReadInt(0xBCE920) + engineIndex * 4) + 0xC1B8) + 0x28);
                 }
                 else
                 {
-                    return GetProgressPercentage(engineIndex); // progress percentage
+                    return GetProgressPercentage(engineIndex).ToHex(); // progress percentage
                 }
             }
             else if (type == EventType.BattleRace)
             {
-                return ReadFloat(ReadInt(0xBCE90C) + 0x120 + engineIndex * 4); // survival/race time
+                return ReadInt(ReadInt(0xBCE90C) + 0x120 + engineIndex * 4); // survival/race time
             }
             else if (type == EventType.BattleArena)
             {
-                return ReadFloat(ReadInt(0xBCE910) + 0x120 + engineIndex * 4); // survival time
+                return ReadInt(ReadInt(0xBCE910) + 0x120 + engineIndex * 4); // survival time
             }
             else
             {
@@ -200,7 +198,7 @@ namespace EventLogger
             {
                 for (int i = eventCount; i < session.events.Count; i++)
                 {
-                    sw.Write((i > 0 ? "\r\n\r\n" : "") + session.events[i].ToString(dpTime, 1));
+                    sw.Write((i > 0 ? "\r\n\r\n" : "") + session.events[i].ToString(logHexTimes));
                 }
             }
             File.WriteAllText(

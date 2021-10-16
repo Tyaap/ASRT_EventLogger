@@ -37,7 +37,7 @@ namespace EventLogger
             return player;
         }
 
-        public Result AddResult(ulong steamId, int localIndex, string name, Character character, Completion completion, float score, int position)
+        public Result AddResult(ulong steamId, int localIndex, string name, Character character, Completion completion, int score, int position)
         {
             if (results.Count == 0)
             {
@@ -58,32 +58,29 @@ namespace EventLogger
             return ToString();
         }
 
-        public string ToString(int dpTime = 3, int dpPercentage = 1)
+        public string ToString(bool hexTimes = false)
         {
             string s = string.Format(
-                "{0}\t{1}\t{2}\r\n",
+                "{0}\t{1}\t{2}",
                 map.GetDescription(),
                 type.GetDescription(),
                 startTime.ToString("yy/MM/dd HH:mm"));
 
             if (results.Count > 0)
             {
-                string sResults = "";
+                s += string.Format("\r\nPosition\tName\t{0}\tCharacter\tPoints", type != EventType.CaptureTheChao ? "Time" : "Chaos");
+                if (type != EventType.CaptureTheChao && hexTimes)
+                {
+                    s += "\tHex Time";
+                }
                 for (int i = 0; i < results.Count; i++)
                 {
-                    sResults += results[i].ToString(dpTime, dpPercentage);
-                    if (i != results.Count - 1)
-                    {
-                        sResults += "\r\n";
-                    }
+                    s += "\r\n" + results[i].ToString(hexTimes);
                 }
-                s += string.Format("Position\tName\t{0}\tCharacter\tPoints\r\n{1}",
-                type != EventType.CaptureTheChao ? "Time" : "Chaos",
-                sResults);
             }
             else
             {
-                s += "NO RESULTS";
+                s += "\r\nNO RESULTS";
             }
             return s;
         }

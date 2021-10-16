@@ -42,7 +42,7 @@ namespace EventLogger
                 }
                 s += "\t" + (MapAcronym)e.map;
             }
-            s += "\t\tPTS\tTracks\tAVERAGE";
+            s += "\t\tPoints\tTracks\tAverage\tTime";
 
             for (int i = 0; i < sortedPlayers.Count; i++)
             {
@@ -60,7 +60,11 @@ namespace EventLogger
                         s += result.points;
                     }
                 }
-                s += "\t\t" + player.totalPoints + "\t" + player.results.Count + "\t" + player.average;
+                s += "\t\t" + player.totalPoints + "\t" + player.results.Count + "\t" + player.average + "\t" + Result.TruncatedTimeString(player.totalTime, 3);
+                if (player.results.Count < events.Count)
+                {
+                    s += "*"; // asterisk on total times that don't include all session events
+                }
             }
             return s;
         }
