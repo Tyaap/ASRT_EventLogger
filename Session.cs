@@ -48,6 +48,7 @@ namespace EventLogger
             {
                 Player player = sortedPlayers[i];
                 s += "\r\n" + (i + 1) + "°\t" + player.name;
+                bool finishedAllRaces = true;
                 foreach (Event e in events)
                 {
                     if (e.results.Count == 0)
@@ -58,12 +59,20 @@ namespace EventLogger
                     if (player.results.TryGetValue(e.index, out Result result))
                     {
                         s += result.points;
+                        if (e.type != EventType.CaptureTheChao && result.completion == Completion.DNF)
+                        {
+                            finishedAllRaces = false;
+                        }
+                    }
+                    else
+                    {
+                        finishedAllRaces = false;
                     }
                 }
                 s += "\t\t" + player.totalPoints + "\t" + player.results.Count + "\t" + player.average + "\t" + Result.TruncatedTimeString(player.totalTime, 3);
-                if (player.results.Count < events.Count)
+                if (!finishedAllRaces)
                 {
-                    s += "*"; // asterisk on total times that don't include all session events
+                    s += "*"; // asterisk on totals that don't include all timed events in the session
                 }
             }
             return s;

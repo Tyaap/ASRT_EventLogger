@@ -24,7 +24,7 @@ namespace EventLogger
             results.Add(index, result);
             totalPoints += result.points;
             average = totalPoints * 10m / results.Count;
-            if (result.thisEvent.type != EventType.CaptureTheChao)
+            if (result.thisEvent.type != EventType.CaptureTheChao && result.completion != Completion.DNF)
             {
                 totalTime += (decimal)result.score.ToFloat();
             }

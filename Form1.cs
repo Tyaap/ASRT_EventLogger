@@ -9,6 +9,7 @@ namespace EventLogger
     {
         public Timer timer = new Timer() { Interval = 100 };
         public Logger logger;
+        public int lobbyStatePtr = 0;
         public int lobbyState = 0;
 
         public Form1()
@@ -38,8 +39,7 @@ namespace EventLogger
             {
                 FormMessage("S&ASRT is running");
                 MemoryHelper.Initialise(processes[0].Id);
-                Write(0x70665C, new byte[] { 0xEB, 0x28 });
-                Write(0x706686, new byte[] { 0x8B, 0xF1, 0x89, 0x3D, 0xFC, 0x0F, 0xFF, 0x00, 0xEB, 0xCE });
+                LobbyStateInit();
             }
 
             int newLobbyState = GetLobbyState();
@@ -62,6 +62,23 @@ namespace EventLogger
                 FormMessage("Results logged!");
             }
             lobbyState = newLobbyState;
+        }
+
+        public void LobbyStateInit()
+        {
+            if (ReadByte(0x70665C) == 0xEB)
+            {
+                // already loaded
+                lobbyStatePtr = ReadInt(0x70668A);
+            }
+            else
+            {
+                Write(0x70665C, new byte[] { 0xEB, 0x28 });
+                Write(0x706686, new byte[] { 0x8B, 0xF1, 0x88, 0x15 });
+                lobbyStatePtr = Allocate(0, 1);
+                Write(0x70668A, lobbyStatePtr);
+                Write(0x70668E, new byte[] { 0xEB, 0xCE });
+            }
         }
 
         public int GetLobbyState()
